@@ -1,0 +1,1 @@
+* TODO Compatibility between big and little endian - create on BE and read on LE, and reverse

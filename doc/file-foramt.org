@@ -1,0 +1,63 @@
+* V1
+** Bimailar Archive file format
+- uint32 - length of message entry in bytes
+- uint16 - bit flags, bit positions are:
+  1) deleted flag
+  2) has tags flag
+  3) maildir owner flag
+  4) has attachments flag
+  5) has parents flag
+  6) body compressed flag
+  7) non utf-8 flag
+  8) encryption flag
+  9) updated flag
+  10) has 64-bit timestamp flag
+  11-16) reserved
+- uint64 - 64 bit message timestamp, in seconds from 1970-01-01 00:00:00 UTC
+- uint16 - the number of parents, presented only if "has parents" flag set
+- sequence of uint32, each uint32 is parent message id , presented only if "has parents" flag set
+- uint16 - encoding id, presented only if non utf-8 flag set
+- uint16 - number of attachments, presented only if "has attachments" flag set
+- uint8 - compression type id, presented only if body compressed flag is set
+- uint8 - encryption type id, presented only if encryption flag is set
+- uint8 - headers count
+- sequence of headers, each entry consists of:
+  - uint8 - header id
+  - uint16 - header content length
+  - string - header content data
+- uint32 - message body length
+- string - message body content
+- sequence of attachments, each entry consists of:
+  - uint8 - attachment flags
+    1) attachment_compressed flag
+    2) attachment_encrypted flag
+    3) attachment_external flag
+    4) attachment_inline flag
+    5-8) reserved
+  - uint8 - attachment mime type length
+  - string - attachment mime type data
+  - uint16 - attachment name length
+  - string - attachment name data
+  - uint32 - attachment body length
+  - string - attachment body data
+- uint32 - message id, usually auto incremented
+** Tag names file format
+- uint16 - encoding, 0 is utf-8
+- sequence of tag entries in such format:
+  - uint32 - tag id
+  - uint16 - tag name length
+  - string - tag name data
+** Tags file format
+- sequence of such entries:
+  - uint32 - message id
+  - uint8 - the number of tags, presented only if has tags flag set
+  - sequence of uint32, each uint32 is tag id , presented only if has tags flag set
+** Header names file format
+- uint16 - encoding, 0 is utf-8
+- sequence of hedader entries in such format:
+  - uint32 - header id
+  - uint16 - header name length
+  - string - header name data
+** Updates file format
+Same as Bimailar archive file format, but message ids must be same as updated message from main archive
+
